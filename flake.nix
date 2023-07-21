@@ -1,17 +1,16 @@
 {
-  outputs = { self, ... }:
+  nixConfig.flake-registry = "https://raw.githubusercontent.com/fornybar/registry/main/registry.json";
+
+  outputs = { self, nixpkgs, ... }@inputs:
   let
     inherit (builtins) mapAttrs readDir;
-    midgardOverlay = overlay: (final: prev: { midgard = (prev.midgard or { }) // (overlay final prev); });
+    inherit (nixpkgs.lib) mapAttrs' nameValuePair removeSuffix;
   in {
-      overlay.libMidgard = midgardOverlay (final: prev: let
-        inherit (prev.lib) mapAttrs' nameValuePair removeSuffix;
-      in {
-        lib = {
-          inherit midgardOverlay;
-          mapMidgardOverlay = mapAttrs (_: overlay: midgardOverlay overlay);
-          importDir = dir: mapAttrs' (n: v: nameValuePair (removeSuffix ".nix" n) (import "${dir}/${n}")) (readDir dir);
-        };
-      });
+
+    lib = rec {
+      midgardOverlay = overlay: (final: prev: { midgard = (prev.midgard or { }) // (overlay final prev); });
+      mapMidgardOverlay = mapAttrs (_: overlay: midgardOverlay overlay);
+      importDir = dir: mapAttrs' (n: v: nameValuePair (removeSuffix ".nix" n) (import "${dir}/${n}")) (readDir dir);
+    };
   };
 }
