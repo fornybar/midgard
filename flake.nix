@@ -7,7 +7,7 @@
   in {
       inherit midgardOverlay mapMidgardOverlay;
 
-      overlay.libMidgard = midgardOverlay (final: prev: let
+      overlays.libMidgard = midgardOverlay (final: prev: let
         inherit (prev.lib) mapAttrs' nameValuePair removeSuffix;
       in {
         lib = {
