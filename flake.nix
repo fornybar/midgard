@@ -12,7 +12,7 @@
       in {
         lib = {
           importDir = dir: mapAttrs' (n: v: nameValuePair (removeSuffix ".nix" n) (import "${dir}/${n}")) (readDir dir);
-          systemdExpoRestart = import ./systemd;
+          systemdExpoRestart = import ./systemd prev;
         };
       });
   };
