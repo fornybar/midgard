@@ -16,8 +16,6 @@
 
           # Merge list of attributes into a single attribute set
           merge = foldAttrs (x: y: x // y) { };
-
-          mkTerraformConfig = import ./terranix.nix prev;
         };
       });
   };
